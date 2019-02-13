@@ -25,6 +25,18 @@ app.post('/newBlog', (req, res) => {
     })
 });
 
+let getAllBlogs = (req, res) => {
+    blogModel.find({}, (err, blogs) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(blogs);
+        }
+    });
+};
+
+app.get('/getBlogs', getAllBlogs);
+
 app.listen(PORT, () => {
     console.log(`Your server is running on port: ${PORT}`);
 });
