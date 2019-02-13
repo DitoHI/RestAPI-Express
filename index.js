@@ -3,30 +3,26 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const routes = require('./src/routes/crmRoutes');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 mongoose.connect('mongodb://localhost/test', {
     useNewUrlParser: true
 });
 
-const Cat = mongoose.model('Cat', {
-    name: String
-});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const kitty = new Cat({ name: 'mimi' });
+const BlogSchema = require('./src/models/crmModel');
+const blogModel = mongoose.model('blog', BlogSchema);
 
-kitty.save().then((res) => {
-    console.log(res);
-    console.log('Meow');
-});
-
-app.get('/', function (req, res, next) {
-    console.log('Req method: ', req.method);
-    next();
-}, function (req, res, next) {
-    console.log('Request Original Url', req.originalUrl);
-    next();
-}, function (req, res, next) {
-    res.send('Request was Successful');
+app.post('/newBlog', (req, res) => {
+    let blog = new blogModel(req.body);
+    blog.save((err, blogModel)=> {
+        if (err) {
+            res.send(err);
+        }
+        res.json(blog);
+    })
 });
 
 app.listen(PORT, () => {

@@ -6,3 +6,5 @@ var blogSchema = new schema({
     author: String,
     body: String,
 });
+
+module.exports = blogSchema;
