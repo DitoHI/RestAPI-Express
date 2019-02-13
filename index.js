@@ -37,6 +37,43 @@ let getAllBlogs = (req, res) => {
 
 app.get('/getBlogs', getAllBlogs);
 
+let getBlogById = (req, res) => {
+    blogModel.findById((req.params.blogId), (err, blog) => {
+        if (err) {
+            res.send(err);
+        }
+        res.send(blog);
+    })
+};
+
+app.get('/blog/:blogId', getBlogById);
+
+// Create and Update
+
+let updateBlog = (req, res) => {
+    blogModel.findOneAndUpdate({_id: req.params.blogId}, req.body, {new: true}, (err, updatedBlog) => {
+        if (err) {
+            res.send(err);
+        }
+        res.send(updatedBlog);
+    })
+};
+
+app.put('/blog/:blogId', updateBlog);
+
+let deleteBlog = (req, res) => {
+    blogModel.remove({_id: req.params.blogId}, (err) => {
+        if (err) {
+            res.send(err);
+        }
+        res.json({ message: 'Blog deleted successfully' });
+    });
+};
+
+app.delete('/blog/:blogId', deleteBlog);
+
+app.use(express.static('public'));
+
 app.listen(PORT, () => {
     console.log(`Your server is running on port: ${PORT}`);
 });
